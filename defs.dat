@@ -1,0 +1,36 @@
+# NOTE: MAINTAINERS ONLY!
+#
+# This file contains the name of the constants that will be used throughout
+# the library. Please consider well before removing any line from this file.
+#
+# Blank lines and lines starting with # will be ignore.
+# Please, no lines greater than 256 characters.
+
+N
+NS
+A
+AN
+ANS
+ANSB
+ANP
+B
+Z
+BMP
+
+# Helper types
+MMDDhhmmss
+MMDD
+YYMMDDhhmmss
+YYMM
+Hhmmss
+
+# Length related
+FIXED
+LLVAR
+LLLVAR
+LLLLVAR
+
+# codification related
+BCD
+ASCII
+
