@@ -5,6 +5,8 @@
 #
 # Blank lines and lines starting with # will be ignore.
 # Please, no lines greater than 256 characters.
+#
+# NOTE: This file is case-sensitive.
 
 N
 NS
@@ -33,4 +35,24 @@ LLLLVAR
 # codification related
 BCD
 ASCII
+
+# keywords
+64bit
+128bit
+bit
+bitmap
+hexadecimal
+hex
+binary
+bin
+size
+type
+format
+codec
+length
+maximum
+minimum
+mti
+number
+name
 

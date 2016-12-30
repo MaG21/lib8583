@@ -5,7 +5,7 @@
 
 #include "crc32.h"
 
-#define PREFIX   "ISO_"
+#define PREFIX   "I_"
 #define DEF_FILE "defs.dat"
 
 #define HEADER_FILE "src/constants.h"
@@ -14,6 +14,7 @@
 #define BUF_SIZE 256
 
 void strip(char *);
+void strupper(char *);
 
 int
 main(int argc, char *argv[])
@@ -58,6 +59,8 @@ main(int argc, char *argv[])
 
 		crc = crc32(buf, len);
 
+		strupper(buf);
+
 		fprintf(header, "#define %s%s %u\n", PREFIX, buf, crc);
 	}
 
@@ -67,6 +70,17 @@ main(int argc, char *argv[])
 	fclose(header);
 
 	return EXIT_SUCCESS;
+}
+
+/* reinventing the wheel */
+void
+strupper(char *s)
+{
+	while(*s) {
+		*s = toupper(*s);
+		s++;
+	}
+	return;
 }
 
 void
