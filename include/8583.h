@@ -1,13 +1,17 @@
 #ifndef _8583_TYPES_H_
 #define _8583_TYPES_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 #include "constants.h"
 
 enum {
-	ISO_64BIT_BITMAP=64,
-	ISO_128BIT_BITMAP=128,
+	ISO_64BIT_BITMAP=63,
+	ISO_128BIT_BITMAP=127,
 
 	ISO_HEX_BITMAP,
 	ISO_BIN_BITMAP,
@@ -16,9 +20,6 @@ enum {
 	ISO_N,
 	ISO_NS,
 	ISO_A,
-	ISO_AN,
-	ISO_AN,
-	ISO_AN,
 	ISO_AN,
 	ISO_B,
 	ISO_Z,
@@ -39,8 +40,6 @@ struct i8583_message {
 };
 
 struct i8583_def {
-	uint8_t  bit;
-
 	char     *desc;
 
 	int      format;
@@ -61,7 +60,11 @@ struct i8583_anatomy {
 
 	struct i8583_def *mti;
 	struct i8583_def *defs;
+};
+
+#ifdef __cplusplus
 }
+#endif
 
 #endif
 

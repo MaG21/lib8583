@@ -10,7 +10,7 @@ parse_int(const char *s, int base, int *isvalid)
 	*isvalid = true;
 
 	errno = 0;
-	val = strtol(str, &endptr, base);
+	val = strtol(s, &endptr, base);
 
 	if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
 			|| (errno != 0 && val == 0)) {
@@ -18,7 +18,7 @@ parse_int(const char *s, int base, int *isvalid)
 		return 0;
 	}
 
-	if (endptr == str) {
+	if (endptr == s) {
 		isvalid = false;
 		return 0;
 	}
@@ -27,11 +27,25 @@ parse_int(const char *s, int base, int *isvalid)
 }
 
 inline int
-parse_int10(const char *s, int *isvalid) {
+parse_int10(const char *s, int *isvalid)
+{
 	return parse_int(s, 10, isvalid);
 }
 
 inline int
-parse_int16(const char *s, int *isvalid) {
+parse_int16(const char *s, int *isvalid)
+{
 	return parse_int(s, 16, isvalid);
 }
+
+bool
+isstrnumber(const char *s)
+{
+	do {
+		if(!isdigit((unsigned char)*s))
+			return false;
+	} while(*(++s));
+
+	return true;
+} 
+

@@ -39,6 +39,7 @@ ASCII
 # keywords
 64bit
 128bit
+bit
 bitmap
 hexadecimal
 hex
@@ -46,11 +47,12 @@ binary
 bin
 size
 type
-number
-name
 format
 codec
 length
 maximum
 minimum
+mti
+number
+name
 

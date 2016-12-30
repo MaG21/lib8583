@@ -1,16 +1,26 @@
-CC=gcc
-CFLAGS=-v -Wall -O3 -Ilib/
+# by: MaG.
 
-all: remove
+include Makefile.inc
 
-remove: generator run
-	rm generate_header
+all: lib generator src
 
-run:
-	./generate_header include/
+lib:
+	$(ECHO) "Stepping into: lib/"
+	$(MAKE) -I.. -C lib/
 
-generator: generate_header.c lib/crc32.c lib/crc32.h
-	$(CC) -o generate_header generate_header.c lib/crc32.c $(CFLAGS)
+src:
+	$(ECHO) "Stepping into: src/"
+	$(MAKE) -I.. -C src/
 
-.PHONY: all run remove generator
+generator: lib generate_header.c
+	$(CC) -o build/generate_header generate_header.c build/crc32.o $(CFLAGS) -I./lib/
 
+	./build/generate_header include/
+
+clean:
+	rm ./build/*
+
+	$(MAKE) clean -C lib/ -I../
+	$(MAKE) clean -C src/ -I../
+
+.PHONY: all generator lib src
