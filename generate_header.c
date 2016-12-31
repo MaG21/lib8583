@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "crc32.h"
+#include "hash.h"
 
 #define PREFIX   "I_"
 #define DEF_FILE "defs.dat"
@@ -23,7 +23,7 @@ main(int argc, char *argv[])
 	FILE     *file;
 	FILE     *header;
 	size_t   len;
-	uint32_t crc;
+	unsigned long hash;
 
 	file = fopen(DEF_FILE, "r");
 	if(!file) {
@@ -57,11 +57,11 @@ main(int argc, char *argv[])
 		if(!len)
 			continue;
 
-		crc = crc32(buf, len);
+		hash = hash_f(buf);
 
 		strupper(buf);
 
-		fprintf(header, "#define %s%s %u\n", PREFIX, buf, crc);
+		fprintf(header, "#define %s%s %lu\n", PREFIX, buf, hash);
 	}
 
 	fprintf(header, "\n#endif\n");
