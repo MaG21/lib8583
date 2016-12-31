@@ -8,8 +8,8 @@
 #include <ini.h>
 
 #include "utils.h"
-#include "8583.h"
-#include "crc32.h"
 
-#define hash(str) crc32(str, strlen(str))
+#include "hash.h"
+#include "8583.h"
+
 #endif
