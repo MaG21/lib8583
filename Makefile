@@ -8,12 +8,12 @@ lib:
 	$(ECHO) "Stepping into: lib/"
 	$(MAKE) -I.. -C lib/
 
-src:
+src: generator
 	$(ECHO) "Stepping into: src/"
 	$(MAKE) -I.. -C src/
 
 generator: lib generate_header.c
-	$(CC) -o build/generate_header generate_header.c build/crc32.o $(CFLAGS) -I./lib/
+	$(CC) -o build/generate_header generate_header.c build/hash.o $(CFLAGS) -I./lib/
 
 	./build/generate_header include/
 
