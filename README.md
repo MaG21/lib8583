@@ -12,7 +12,7 @@ I'm planing on.
 
 Concept
 ---
-![alt tag](http://i.imgur.com/H6aQqPn.png)
+![alt tag](http://i.imgur.com/1no6Xm4.png)
 
 ### Sample spec file
 ```ini
@@ -21,8 +21,6 @@ size=64bit
 type=hexadecimal
 
 [mti]
-number=200
-name="text"
 type=N
 format=LLVAR
 codec=BCD
@@ -30,9 +28,7 @@ codec=BCD
 # Yes, this is a comment
 
 [3]
-name="text"
+type=ANS
 format=LLLVAR
 codec=ASCII
-length=4
-minimum=100
 ```
