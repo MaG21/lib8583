@@ -2,7 +2,7 @@
 
 NAME    =
 CC      = gcc
-CFLAGS  = -ggdb -Wall -v
+CFLAGS  = -ggdb -Os -Wall -v
 LD	= gcc
 LDFLAGS	= 
 RM	= rm

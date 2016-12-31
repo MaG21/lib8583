@@ -7,7 +7,7 @@
 static int
 message_type(const char *value)
 {
-	switch(hash(value)) {
+	switch(hash_f(value)) {
 	case I_HEX:
 	case I_HEXADECIMAL:
 		return ISO_HEX_BITMAP;
@@ -27,7 +27,7 @@ message_type(const char *value)
 static int
 message_size(const char *value)
 {
-	switch(hash(value)) {
+	switch(hash_f(value)) {
 	case I_64BIT:
 		return ISO_64BIT_BITMAP;
 	case I_128BIT:
@@ -48,7 +48,7 @@ bitmap_section(void *user, const char *key, const char *value)
 	int                   ret;
 	struct i8583_anatomy *anatomy = user;
 
-	switch(hash(key)) {
+	switch(hash_f(key)) {
 	case I_TYPE:
 		ret = message_type(value);
 		if(ret<0)
@@ -90,7 +90,7 @@ mti_object(struct i8583_anatomy *anatomy)
 static int
 def_format(const char *value)
 {
-	switch(hash(value)) {
+	switch(hash_f(value)) {
 	case I_FIXED:
 		return ISO_FIXED;
 	case I_LLVAR:
@@ -107,7 +107,7 @@ def_format(const char *value)
 static int
 def_codec(const char *value)
 {
-	switch(hash(value)) {
+	switch(hash_f(value)) {
 	case I_BCD:
 		return ISO_BCD_CODEC;
 	case I_ASCII:
@@ -123,7 +123,7 @@ def_section(void *user, const char *key, const char *value)
 	int               isvalid;
 	struct i8583_def *def      = user;
 
-	switch(hash(key)) {
+	switch(hash_f(key)) {
 	case I_NAME:
 		if(!value)
 			return 0;
@@ -194,13 +194,17 @@ static int
 handler(void *user, const char *section, const char *key, const char *value)
 {
 	int                   ret;
-	uint32_t              section_crc;
+	int                   isvalid;
+	int                   bit_number;
+	unsigned int          hash;
 	struct i8583_def     *def;
-	struct i8583_anatomy *anatomy     = user;
+	struct i8583_anatomy *anatomy = user;
 
-	section_crc = isstrnumber(section) ? I_BIT : hash(section);
+	bit_number = parse_int10(section, &isvalid);
 
-	switch(section_crc) {
+	hash = isvalid ? I_BIT : hash_f(section);
+
+	switch(hash) {
 	case I_MTI:
 		/* FIXME: allow multiple MTIs */
 		def = mti_object(anatomy);
@@ -225,11 +229,10 @@ handler(void *user, const char *section, const char *key, const char *value)
 		if(!anatomy->defs)
 			return 0; /* bitmap section must be defined first */
 
-		ret = atoi(section);
-		if(ret < 1 || ret > anatomy->bitmap_size)
+		if(bit_number <= 0 || bit_number > anatomy->bitmap_size)
 			return 0; /* bitmap size <-> bit number mismatch */
 
-		def = anatomy->defs + ret - 1;
+		def = anatomy->defs + bit_number - 1;
 		ret = def_section(def, key, value);
 		if(!ret)
 			return 0;
