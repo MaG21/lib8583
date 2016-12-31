@@ -1,13 +1,13 @@
 include Makefile.inc
 
-all: crc inih
+all: hash inih
 
 inih: inih/ini.c inih/ini.h
 	$(CC) -c -o ../build/ini.o inih/ini.c $(CFLAGS)
 
-crc: crc32.c crc32.h
-	$(CC) -c -o ../build/crc32.o crc32.c $(CFLAGS)
+hash: hash.c hash.h
+	$(CC) -c -o ../build/hash.o hash.c $(CFLAGS)
 
 clean:
 
-.PHONY: inih crc
+.PHONY: inih hash
