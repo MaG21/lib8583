@@ -9,10 +9,8 @@ message_type(const char *value)
 {
 	switch(hash_f(value)) {
 	case I_HEX:
-	case I_HEXADECIMAL:
 		return ISO_HEX_BITMAP;
 	case I_BIN:
-	case I_BINARY:
 		return ISO_BIN_BITMAP;
 	}
 
@@ -46,7 +44,7 @@ static int
 bitmap_section(void *user, const char *key, const char *value)
 {
 	int                   ret;
-	struct i8583_anatomy *anatomy = user;
+	struct i8583_bitmap  *bitmap = user;
 
 	switch(hash_f(key)) {
 	case I_TYPE:
@@ -54,7 +52,7 @@ bitmap_section(void *user, const char *key, const char *value)
 		if(ret<0)
 			return 0;
 
-		anatomy->bitmap_representation = ret;
+		bitmap->bitmap_representation = ret;
 		break;
 
 	case I_SIZE:
@@ -62,29 +60,13 @@ bitmap_section(void *user, const char *key, const char *value)
 		if(ret<0)
 			return 0;
 
-		anatomy->bitmap_size = ret;
+		bitmap->bitmap_size = ret;
 		break;
 
 	default:
 		return 0;
 	}
 	return 1;
-}
-
-static struct i8583_def*
-mti_object(struct i8583_anatomy *anatomy)
-{
-	struct i8583_def *ptr;
-
-	if(anatomy->mti) 
-		return anatomy->mti;
-
-	ptr = malloc(sizeof(*ptr));
-	if(!ptr)
-		exit(EXIT_FAILURE);
-
-	anatomy->mti = ptr;
-	return ptr;
 }
 
 static int
@@ -120,17 +102,9 @@ static int
 def_section(void *user, const char *key, const char *value)
 {
 	int               ret;
-	int               isvalid;
 	struct i8583_def *def      = user;
 
 	switch(hash_f(key)) {
-	case I_NAME:
-		if(!value)
-			return 0;
-
-		def->desc = strdup(value);
-		break;
-
 	case I_FORMAT:
 		ret = def_format(value);
 		if(ret<0)
@@ -147,37 +121,6 @@ def_section(void *user, const char *key, const char *value)
 		def->codec = ret;
 		break;
 
-	case I_NUMBER:
-		ret = parse_int10(value, &isvalid);
-		if(!isvalid)
-			return 0;
-
-		def->number = ret;
-		break;
-
-	case I_LENGTH:
-		ret = parse_int10(value, &isvalid);
-		if(!isvalid)
-			return 0;
-
-		def->length = ret;
-		break;
-
-	case I_MINIMUM:
-		ret = parse_int10(value, &isvalid);
-		if(!isvalid)
-			return 0;
-		def->minimum = ret;
-		break;
-
-	case I_MAXIMUM:
-		ret = parse_int10(value, &isvalid);
-		if(!isvalid)
-			return 0;
-
-		def->maximum = ret;
-		break;
-
 	default:
 		/* unrecognized key */
 		return 0;
@@ -185,6 +128,8 @@ def_section(void *user, const char *key, const char *value)
 
 	return 1;
 }
+
+#define MTI_IDX 0
 
 /*
  * FIXME: avoid magic values
@@ -197,8 +142,7 @@ handler(void *user, const char *section, const char *key, const char *value)
 	int                   isvalid;
 	int                   bit_number;
 	unsigned int          hash;
-	struct i8583_def     *def;
-	struct i8583_anatomy *anatomy = user;
+	struct i8583_message  *msg = user;
 
 	bit_number = parse_int10(section, &isvalid);
 
@@ -207,33 +151,22 @@ handler(void *user, const char *section, const char *key, const char *value)
 	switch(hash) {
 	case I_MTI:
 		/* FIXME: allow multiple MTIs */
-		def = mti_object(anatomy);
-		ret = def_section(def, key, value);
+		ret = def_section(&msg->def[MTI_IDX], key, value);
 		if(!ret)
 			return 0;
 		break;
 
 	case I_BITMAP:
-		ret = bitmap_section(anatomy, key, value);
+		ret = bitmap_section(&msg->bitmap, key, value);
 		if(!ret)
 			return 0;
-
-		def = malloc(anatomy->bitmap_size*sizeof(*def));
-		if(!def)
-			exit(EXIT_FAILURE);
-
-		anatomy->defs = def;
 		break;
 
 	case I_BIT:
-		if(!anatomy->defs)
-			return 0; /* bitmap section must be defined first */
-
-		if(bit_number <= 0 || bit_number > anatomy->bitmap_size)
+		if(bit_number <= 0 || bit_number > ISO_128BIT_BITMAP)
 			return 0; /* bitmap size <-> bit number mismatch */
 
-		def = anatomy->defs + bit_number - 1;
-		ret = def_section(def, key, value);
+		ret = def_section(&msg->def[bit_number], key, value);
 		if(!ret)
 			return 0;
 		break;
@@ -246,19 +179,12 @@ handler(void *user, const char *section, const char *key, const char *value)
 }
 
 
-struct i8583_anatomy*
-i8583_load_definition_file(const char *filename, int bitmap_size)
+int
+i8583_load_definition_file(const char *filename, struct i8583_message *msg)
 {
 	int ret;
-	struct i8583_anatomy *anatomy;
 
-	anatomy = malloc(sizeof(*anatomy));
-	if(!anatomy) {
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
-
-	ret = ini_parse(filename, handler, anatomy);
+	ret = ini_parse(filename, handler, msg);
 	if(ret > 0) {
 		fprintf(stderr, "[INI]: Syntax error at: %d\n", ret);
 		exit(EXIT_FAILURE);
@@ -267,6 +193,6 @@ i8583_load_definition_file(const char *filename, int bitmap_size)
 		exit(EXIT_FAILURE);
 	}
 
-	return anatomy;
+	return EXIT_SUCCESS;
 }
 
