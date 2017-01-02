@@ -13,21 +13,21 @@ I'm planing on.
 Concept
 ---
 ### roadmap
-    - ~~Create a proper structure for the project.~~
-    - ~~Design the spec file~~
-    - ~~Implement the spec loader.~~
-        1. ~~Implement tests.~~
-    - ~~Design and implement building process.~~
-    - Simplify building process.
-    - ~~Decide whether this lib will support 128bit bitmaps.~~ (NO)
-    - Implement the Message Parser.
-        1. Implement tests for Message Parser.
-    - Implement the Message Builder.
-        1. Implement tests for Message Builder.
-        2. Implement tests to parse self-created messages.
-    - Optimization
-    - Micro-optimization
-    - Review portability issues (if any)
+- ~~Create a proper structure for the project.~~
+- ~~Design the spec file~~
+- ~~Implement the spec loader.~~
+    1. ~~Implement tests.~~
+- ~~Design and implement building process.~~
+- Simplify building process.
+- ~~Decide whether this lib will support 128bit bitmaps.~~ (NO)
+- Implement the Message Parser.
+    1. Implement tests for Message Parser.
+- Implement the Message Builder.
+    1. Implement tests for Message Builder.
+    2. Implement tests to parse self-created messages.
+- Optimization
+- Micro-optimization
+- Review portability issues (if any)
 
 ![alt tag](http://i.imgur.com/1no6Xm4.png)
 
