@@ -1,6 +1,6 @@
-build/
 *.o
 *.swp
 *.swo
 .DS_Store
 sticky
+build/*
