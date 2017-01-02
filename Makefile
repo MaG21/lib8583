@@ -2,22 +2,24 @@
 
 include Makefile.inc
 
-VPATH = ./lib/
+VPATH = build
 
-all: lib generator src
+$(LIB_NAME): lib src generate_header.o 
+	ar rcs build/$(LIB_NAME) src/utils.o src/load.o lib/hash.o lib/ini.o
 
-.PHONY: lib generator src tests
+.PHONY: lib src tests
 
 lib:
 	$(ECHO) "Stepping into: lib/"
 	$(MAKE) -I.. -C lib/
 
-src: generator
+src: generate_header.o
 	$(ECHO) "Stepping into: src/"
 	$(MAKE) -I.. -C src/
 
-generator: hash.c generate_header.c
-	$(CC) -o build/generate_header generate_header.c build/hash.o $(CFLAGS) -I./lib/
+generate_header.o: generate_header.c lib/hash.o
+	$(CC) -c $< $(CFLAGS) -I./lib/
+	$(CC) -o build/generate_header generate_header.o lib/hash.o $(CFLAGS)
 
 	./build/generate_header include/
 
@@ -25,8 +27,9 @@ tests:
 	$(MAKE) -C tests/ -I..
 
 clean:
-	-$(RM) build/generate_header build/*.o
+	-rm -f build/generate_header build/$(LIB_NAME)
 
 	$(MAKE) clean -C lib/ -I../
 	$(MAKE) clean -C src/ -I../
+	$(MAKE) clean -C tests/ -I../
 

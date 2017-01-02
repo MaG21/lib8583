@@ -3,11 +3,9 @@ include ../../Makefile.inc
 VPATH   = ../../build/
 INCLUDE = -I. -I../../include -I../../lib -I ../../lib/inih/ -I../../src
 
-OBJS  = $(patsubst %.c,%.o,$(wildcard *.c))
-EXECS = $(basename $(OBJS))
-DEPS  = load.o hash.o ini.o utils.o
-EXPANDED_DEPS = ../../build/load.o ../../build/hash.o ../../build/ini.o \
-		../../build/utils.o
+OBJS    = $(patsubst %.c,%.o,$(wildcard *.c))
+EXECS   = $(basename $(OBJS))
+LIB_OBJ = ../../build/$(LIB_NAME)
 
 .PHONY: all link clean run
 
@@ -28,9 +26,9 @@ run: link
 	tput sgr0; $(ECHO) "Done."
 
 
-link: $(OBJS) $(DEPS)
+link: $(OBJS)
 	for obj in $(EXECS); do \
-		$(LD) -o $$obj $$obj.o $(EXPANDED_DEPS) $(CFLAGS); \
+		$(LD) -o $$obj $$obj.o $(LIB_OBJ) $(CFLAGS); \
 	done
 
 $(OBJS):
