@@ -18,16 +18,11 @@ struct i8583_def {
 };
 
 #define ISO_BITS_PER_BITMAP 64
-#define ISO_SIZE_PER_BITMAP 8
-
-#define ISO_64BIT_BITMAP 64
-#define ISO_128BIT_BITMAP 128
 
 #define ISO_HEX_BITMAP 1
 #define ISO_BIN_BITMAP 2
 
 struct i8583_bitmap {
-	uint8_t bitmap_size;
 	uint8_t bitmap_representation;
 };
 

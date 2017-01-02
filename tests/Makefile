@@ -2,12 +2,9 @@
 # calls the inner make of said directory.
 include ../Makefile.inc
 
-.PHONY: run tests load clean all
+.PHONY: tests clean all
 
-all: load
-
-load:
-	$(MAKE) -I../.. -C load/
+all: tests
 
 tests:
 	$(MAKE) run -I../ -C load/ -s
