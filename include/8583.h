@@ -7,11 +7,14 @@ extern "C" {
 
 #include <stdint.h>
 
+#include <ini.h>
+
 #include "constants.h"
 
 struct i8583_def {
-	uint16_t format;
-	uint16_t codec;
+	uint8_t type;
+	uint8_t format;
+	uint8_t codec;
 };
 
 #define ISO_BITS_PER_BITMAP 64
@@ -28,8 +31,8 @@ struct i8583_bitmap {
 	uint8_t bitmap_representation;
 };
 
-struct i8583_message {
-	uint8_t mti;
+struct i8583_message_def {
+	uint16_t mti;
 
 	struct i8583_bitmap bitmap;
 
@@ -38,10 +41,12 @@ struct i8583_message {
 
 enum {
 	/* types */
-	ISO_N,
+	ISO_N=1,    /* important =1 */
 	ISO_NS,
-	ISO_A,
 	ISO_AN,
+	ISO_ANS,
+	ISO_ANP,
+	ISO_A,
 	ISO_B,
 	ISO_Z,
 
@@ -55,6 +60,20 @@ enum {
 	ISO_BCD_CODEC,
 	ISO_ASCII_CODEC
 };
+
+/*
+ * This functions loads a 8583 message spec. +reader+ is the function tha will
+ * be used to read from +stream+, the prototype of reader is the same as
+ * fgets(3) from the standard library.
+ *
+ * return:
+ * 	- 0 if it loaded the spec correctly.
+ * 	- -1 if either the bitmap or mti section is missing.
+ * 	- a positive number greater than 0, indicating the line of a syntax
+ *        error or line where an unrecognized key and/or value was given.
+ */
+int i8583_load_definition_file(ini_reader, void *,struct i8583_message_def *);
+
 
 #ifdef __cplusplus
 }

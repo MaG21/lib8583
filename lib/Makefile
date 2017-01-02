@@ -1,13 +1,19 @@
 include Makefile.inc
 
+# In order:
+#   - disable multi-line entries.
+#   - stop on first error
+INIH_CFLAGS = -DINI_ALLOW_MULTILINE=0 -DINI_STOP_ON_FIRST_ERROR=1
+VPATH = ../build
+
 all: hash inih
 
-inih: inih/ini.c inih/ini.h
-	$(CC) -c -o ../build/ini.o inih/ini.c $(CFLAGS)
+ini.o: inih/ini.c inih/ini.h
+	$(CC) -c -o ../build/$@ $< $(CFLAGS) $(INIH_CFLAGS) -DINI_INLINE_COMMENT_PREFIXES='"#"'
 
-hash: hash.c hash.h
-	$(CC) -c -o ../build/hash.o hash.c $(CFLAGS)
+hash.o: hash.c hash.h
+	$(CC) -c -o ../build/$@ $< $(CFLAGS)
 
 clean:
+	-$(RM) *.o
 
-.PHONY: inih hash

@@ -4,7 +4,7 @@ int
 parse_int10(const char *restrict s, int *isvalid)
 {
 	int value = 0;
-	int sign;
+	int sign  = 1;
 
 	if( *s=='+' || *s=='-' ) {
 		if( *s == '-' )
