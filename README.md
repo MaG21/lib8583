@@ -18,7 +18,7 @@ Concept
 - ~~Implement the spec loader.~~
     1. ~~Implement tests.~~
 - ~~Design and implement building process.~~
-- Simplify building process.
+- ~~Simplify building process.~~
 - ~~Decide whether this lib will support 128bit bitmaps.~~ (NO)
 - Implement the Message Parser.
     1. Implement tests for Message Parser.

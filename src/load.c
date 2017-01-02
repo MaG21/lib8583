@@ -16,19 +16,6 @@ message_type(const char *value)
 	return -1;
 }
 
-static int
-message_size(const char *value)
-{
-	switch(hash_f(value)) {
-	case I_64BIT:
-		return ISO_64BIT_BITMAP;
-	case I_128BIT:
-		return ISO_128BIT_BITMAP;
-	}
-
-	return -1;
-}
-
 /*
  * returns -1 on error.
  */
@@ -46,15 +33,6 @@ bitmap_section(void *user, const char *key, const char *value)
 
 		bitmap->bitmap_representation = ret;
 		break;
-
-	case I_SIZE:
-		ret = message_size(value);
-		if(ret<0)
-			return -1;
-
-		bitmap->bitmap_size = ret;
-		break;
-
 	default:
 		return -1;
 	}
@@ -191,7 +169,7 @@ handler(void *user, const char *restrict section, const char *restrict key,
 		break;
 
 	case I_BIT:
-		if(bit_number <= 0 || bit_number > ISO_128BIT_BITMAP)
+		if(bit_number <= 0 || bit_number > ISO_BITS_PER_BITMAP)
 			return 0;
 
 		ret = def_section(&msg->def[bit_number], key, value);
@@ -213,13 +191,13 @@ i8583_load_definition_file(ini_reader reader, void *stream,
 	int ret;
 
 	msg->def[MTI_IDX].type = 0;
-	msg->bitmap.bitmap_size = 0;
+	msg->bitmap.bitmap_representation = 0;
 
 	ret = ini_parse_stream(reader, stream, handler, msg);
 	if(ret)
 		return ret;
 
-	if(!msg->def[MTI_IDX].type || !msg->bitmap.bitmap_size)
+	if(!msg->def[MTI_IDX].type || !msg->bitmap.bitmap_representation)
 		return -1;
 
 	return 0;

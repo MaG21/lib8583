@@ -22,6 +22,7 @@ main(void)
 	ret = i8583_load_definition_file((ini_reader)fgets, file, &msg);
 
 	assert(ret>0);
+	assert(ret==15);
 	fclose(file);
 
 	return EXIT_SUCCESS;
