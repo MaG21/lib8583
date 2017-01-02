@@ -1,12 +1,18 @@
 include Makefile.inc
 
 INCLUDE = -I. -I../include -I../lib -I ../lib/inih/
+VPATH = ../build ../include/8583.h
+
+.PHONY: all clean
 
 all: load.o utils.o
 
-load.o: utils.o load.[ch]
-	$(CC) -c -o ../build/load.o load.c $(CFLAGS) $(INCLUDE)
+load.o: load.c utils.o constants.h 8583.h
+	$(CC) -c -o ../build/$@ $< $(CFLAGS) $(INCLUDE)
 
-utils.o: utils.[ch]
-	$(CC) -c -o ../build/utils.o utils.c $(CFLAGS) $(INCLUDE)
+utils.o: utils.c utils.h
+	$(CC) -c -o ../build/$@ $< $(CFLAGS) $(INCLUDE)
+
+clean:
+	-$(RM) *.o
 

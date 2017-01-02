@@ -5,10 +5,8 @@
 
 #include "8583.h"
 
-#define ISDIGIT(c) (c>='0' || c<='9')
+#define ISDIGIT(c) ((c>='0' && c<='9'))
 
 int parse_int10(const char *, int *isvalid);
-
-unsigned long hash(unsigned char *);
 
 #endif
