@@ -23,7 +23,7 @@ generate_header.o: generate_header.c lib/hash.o
 
 	./build/generate_header include/
 
-tests:
+tests: $(LIB_NAME)
 	$(MAKE) -C tests/ -I..
 
 clean:
