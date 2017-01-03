@@ -11,13 +11,18 @@ extern "C" {
 
 #include "constants.h"
 
+#define ISO_NUMBER_OF_REQUIRED_OPTIONS 3
 struct i8583_def {
-	uint8_t type;
-	uint8_t format;
-	uint8_t codec;
+	uint16_t size;
+
+	uint8_t  processed_options;
+
+	uint8_t  type;
+	uint8_t  format;
+	uint8_t  codec;
 };
 
-#define ISO_BITS_PER_BITMAP 64
+#define ISO_DEFS_PER_BITMAP 64
 
 #define ISO_HEX_BITMAP 1
 #define ISO_BIN_BITMAP 2
@@ -27,11 +32,9 @@ struct i8583_bitmap {
 };
 
 struct i8583_message_def {
-	uint16_t mti;
-
 	struct i8583_bitmap bitmap;
 
-	struct i8583_def    def[ISO_BITS_PER_BITMAP];
+	struct i8583_def    def[ISO_DEFS_PER_BITMAP];
 };
 
 enum {
@@ -62,10 +65,11 @@ enum {
  * fgets(3) from the standard library.
  *
  * return:
- * 	- 0 if it loaded the spec correctly.
- * 	- -1 if either the bitmap or mti section is missing.
- * 	- a positive number greater than 0, indicating the line of a syntax
- *        error or line where an unrecognized key and/or value was given.
+ * 	 -  0 if it loaded the spec correctly.
+ * 	 -  -1 if either the bitmap or mti section is missing.
+ * 	 -  -2 if an option is missing somewhere.
+ * 	 -  a positive number greater than 0, indicating the line of a syntax
+ *          error or line where an unrecognized key and/or value was given.
  */
 int i8583_load_definition_file(ini_reader, void *,struct i8583_message_def *);
 
