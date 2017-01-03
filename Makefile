@@ -17,7 +17,7 @@ src: generate_header.o
 	$(ECHO) "Stepping into: src/"
 	$(MAKE) -I.. -C src/
 
-generate_header.o: generate_header.c lib/hash.o
+generate_header.o: generate_header.c lib/hash.o defs.dat
 	$(CC) -c $< $(CFLAGS) -I./lib/
 	$(CC) -o build/generate_header generate_header.o lib/hash.o $(CFLAGS)
 

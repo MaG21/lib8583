@@ -100,7 +100,7 @@ def_type(const char *value)
 static int
 def_section(void *user, const char *key, const char *value)
 {
-	int_fast16_t      ret;
+	int               ret;
 	struct i8583_def *def      = user;
 
 	switch(hash_f(key)) {
@@ -128,10 +128,22 @@ def_section(void *user, const char *key, const char *value)
 		def->type = ret;
 		break;
 
+	case I_SIZE: /*optional*/
+                def->size = parse_int10(value, &ret);
+                if(!ret || !def->size)
+                        return -1;
+
+		goto optional_option;
+                break;
+
 	default:
 		return -1;
 	}
 
+	def->processed_options++;
+	return 0;
+
+optional_option:
 	return 0;
 }
 
@@ -169,12 +181,13 @@ handler(void *user, const char *restrict section, const char *restrict key,
 		break;
 
 	case I_BIT:
-		if(bit_number <= 0 || bit_number > ISO_BITS_PER_BITMAP)
+		if(bit_number <= 0 || bit_number > ISO_DEFS_PER_BITMAP)
 			return 0;
 
 		ret = def_section(&msg->def[bit_number], key, value);
 		if(ret<0)
 			return 0;
+
 		break;
 
 	default:
@@ -188,17 +201,32 @@ int
 i8583_load_definition_file(ini_reader reader, void *stream, 
                            struct i8583_message_def *msg)
 {
-	int ret;
+	int tmp;
+	const size_t defs_size = sizeof(msg->def) / sizeof(*msg->def);
 
 	msg->def[MTI_IDX].type = 0;
 	msg->bitmap.bitmap_representation = 0;
 
-	ret = ini_parse_stream(reader, stream, handler, msg);
-	if(ret)
-		return ret;
+	for(tmp=0; tmp < defs_size; tmp++) {
+		msg->def[tmp].size = 0;
+		msg->def[tmp].processed_options = 0;
+	}
+
+	tmp = ini_parse_stream(reader, stream, handler, msg);
+	if(tmp)
+		return tmp;
 
 	if(!msg->def[MTI_IDX].type || !msg->bitmap.bitmap_representation)
 		return -1;
+
+	/* start from bit on position 1 */
+	for(tmp=0; tmp < defs_size; tmp++) {
+		if(msg->def[tmp].processed_options &&
+		               msg->def[tmp].processed_options !=
+		                        ISO_NUMBER_OF_REQUIRED_OPTIONS) {
+			return -2;
+		}
+	}
 
 	return 0;
 }

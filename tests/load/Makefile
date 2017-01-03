@@ -10,6 +10,8 @@ run: link
 	./missing_bitmap
 	tput setaf 2; $(ECHO) "(missing_mti.c)Throw an error if the mti section is missing."; tput setaf 1
 	./missing_mti
-	tput setaf 2; $(ECHO) "(section_error.c)Throw an error if a unrecognized section is fetched."; tput setaf 1
+	tput setaf 2; $(ECHO) "(section_error.c)Throw an error if an unrecognized section is fetched."; tput setaf 1
 	./section_error
+	tput setaf 2; $(ECHO) "(missing_option.c)Throw an error if an option is missing somewhere."; tput setaf 1
+	./missing_option
 	tput sgr0; $(ECHO) "Done."
