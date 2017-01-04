@@ -4,7 +4,6 @@
 
 include ../../Makefile.inc
 
-VPATH   = ../../build/
 INCLUDE = -I. -I../../include -I../../lib -I ../../lib/inih/ -I../../src
 
 OBJS    = $(patsubst %.c,%.o,$(wildcard *.c))
@@ -15,12 +14,10 @@ LIB_OBJ = ../../build/$(LIB_NAME)
 
 all: $(OBJS) link
 
-link: $(OBJS)
-	for obj in $(EXECS); do \
-		$(LD) -o $$obj $$obj.o $(LIB_OBJ) $(CFLAGS); \
-	done
+link: $(OBJS) $(EXECS)
 
-$(OBJS):
+$(EXECS):
+	$(LD) -o $@ $@.o $(LIB_OBJ) $(CFLAGS)
 
 # Tells make how I want to compile the object files
 %.o: %.c

@@ -11,11 +11,11 @@ $(LIB_NAME): lib src generate_header.o
 
 lib:
 	$(ECHO) "Stepping into: lib/"
-	$(MAKE) -I.. -C lib/
+	$(MAKE) -I.. -C lib/ -s
 
 src: generate_header.o
 	$(ECHO) "Stepping into: src/"
-	$(MAKE) -I.. -C src/
+	$(MAKE) -I.. -C src/ -s
 
 generate_header.o: generate_header.c lib/hash.o defs.dat
 	$(CC) -c $< $(CFLAGS) -I./lib/
@@ -24,7 +24,7 @@ generate_header.o: generate_header.c lib/hash.o defs.dat
 	./build/generate_header include/
 
 tests: $(LIB_NAME)
-	$(MAKE) -C tests/ -I..
+	$(MAKE) -I.. -C tests/ -s
 
 clean:
 	-rm -f build/generate_header build/$(LIB_NAME)
