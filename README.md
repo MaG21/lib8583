@@ -20,6 +20,7 @@ Concept
 - ~~Design and implement building process.~~
 - ~~Simplify building process.~~
 - ~~Decide whether this lib will support 128bit bitmaps.~~ (NO)
+- Implement encoder/decoder for fields.
 - Implement the Message Parser.
     1. Implement tests for Message Parser.
 - Implement the Message Builder.
